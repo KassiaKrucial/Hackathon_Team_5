@@ -103,36 +103,7 @@ public class TestingHackathoApplication {
         WebElement proceedButton2 = browser.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div/section/div/section/div/div[1]/div/div[1]/div[2]/div/div[2]/div[2]/div/a"));
         proceedButton2.click();
 
-        WebElement guestCheckoutButton = browser.findElement(By.xpath("//button[@id='opc_guestCheckout']"));
-        guestCheckoutButton.click();
-
-        WebElement customerFirstname = browser.findElement(By.xpath("//input[@id='customer_firstname']"));
-        customerFirstname.sendKeys(NAME_OF_USER);
-
-        WebElement customerSurname = browser.findElement(By.xpath("//input[@id='customer_lastname']"));
-        customerSurname.sendKeys(SURNAME_OF_USER);
-
-        String custEmail = (System.currentTimeMillis() + "@mail.cz");
-        WebElement customerEmail = browser.findElement(By.xpath("//input[@id='email']"));
-        customerEmail.sendKeys(custEmail);
-
-        WebElement customerPhone = browser.findElement(By.xpath("//*[@id=\"phone_mobile\"]"));
-        customerPhone.sendKeys(PHONE_NUMBER);
-
-        WebElement address = browser.findElement(By.xpath("//input[@id='address1']"));
-        address.sendKeys("address1");
-
-        WebElement city = browser.findElement(By.xpath("//input[@id='city']"));
-        city.sendKeys("London");
-
-        WebElement postCode = browser.findElement(By.xpath("//input[@id='postcode']"));
-        postCode.sendKeys("63700");
-
-        WebElement mobilePhone = browser.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div/section/div/section/div/div[1]/div/div[2]/div[2]/div/div/form[2]/div[2]/div[9]/div[13]/input"));
-        mobilePhone.sendKeys(PHONE_NUMBER);
-
-        WebElement saveButton = browser.findElement(By.xpath("//button[@id='submitGuestAccount']"));
-        saveButton.click();
+        inputGuestInfo();
 
         WebElement nameForAssert = browser.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div/section/div/section/div/div[1]/div/div[2]/div[2]/div/div[1]/div[2]"));
         WebElement phoneForAssert = browser.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div/section/div/section/div/div[1]/div/div[2]/div[2]/div/div[3]/div[2]"));
@@ -182,9 +153,40 @@ public class TestingHackathoApplication {
         Assertions.assertEquals("LONDON " + timeStamp, header.getText());
     }
 
+    @Test
+    public void payWithBankTransferAsGuest() {
+        browser.navigate().to(URL_OF_APPLICATION);
+
+        createBooking();
+
+        WebElement proceedButton = browser.findElement(By.xpath("//a[@title='Proceed to checkout']"));
+        proceedButton.click();
+
+        WebElement proceedButton2 = browser.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div/section/div/section/div/div[1]/div/div[1]/div[2]/div/div[2]/div[2]/div/a"));
+        proceedButton2.click();
+
+        inputGuestInfo();
+
+        WebElement proceedToPayment = browser.findElement(By.xpath("//a[@title='Proceed to Payment']"));
+        proceedToPayment.click();
+
+        WebElement agreeToConditions = browser.findElement(By.xpath("//label[@id='tc_txt']"));
+        agreeToConditions.click();
+
+        WebElement cheque = browser.findElement(By.xpath("//a[@class='cheque']"));
+        cheque.click();
+
+        WebElement submitButton = browser.findElement(By.xpath("//button[@type='submit']"));
+        submitButton.click();
+
+        WebElement h1 = browser.findElement(By.xpath("//h1"));
+
+        Assertions.assertEquals("ORDER CONFIRMATION", h1.getText());
+    }
+
     @AfterEach
     public void tearDown() {
-        browser.close();
+        //browser.close();
     }
 
     private void logInUser(String email, String password){
@@ -199,7 +201,7 @@ public class TestingHackathoApplication {
 
         WebElement createAccountButton = browser.findElement(By.xpath("//button[@id='SubmitLogin']"));
         createAccountButton.click();
-    };
+    }
 
     private void logOutUser() {
         WebElement usernameButton = browser.findElement(By.xpath("//button[@id='user_info_acc']"));
@@ -235,6 +237,39 @@ public class TestingHackathoApplication {
 
         WebElement bookNowButton = browser.findElement(By.xpath("//a[@data-id-product='1']"));
         bookNowButton.click();
+    }
+
+    private void inputGuestInfo() {
+        WebElement guestCheckoutButton = browser.findElement(By.xpath("//button[@id='opc_guestCheckout']"));
+        guestCheckoutButton.click();
+
+        WebElement customerFirstname = browser.findElement(By.xpath("//input[@id='customer_firstname']"));
+        customerFirstname.sendKeys(NAME_OF_USER);
+
+        WebElement customerSurname = browser.findElement(By.xpath("//input[@id='customer_lastname']"));
+        customerSurname.sendKeys(SURNAME_OF_USER);
+
+        String custEmail = (System.currentTimeMillis() + "@mail.cz");
+        WebElement customerEmail = browser.findElement(By.xpath("//input[@id='email']"));
+        customerEmail.sendKeys(custEmail);
+
+        WebElement customerPhone = browser.findElement(By.xpath("//*[@id=\"phone_mobile\"]"));
+        customerPhone.sendKeys(PHONE_NUMBER);
+
+        WebElement address = browser.findElement(By.xpath("//input[@id='address1']"));
+        address.sendKeys("address1");
+
+        WebElement city = browser.findElement(By.xpath("//input[@id='city']"));
+        city.sendKeys("London");
+
+        WebElement postCode = browser.findElement(By.xpath("//input[@id='postcode']"));
+        postCode.sendKeys("63700");
+
+        WebElement mobilePhone = browser.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div/section/div/section/div/div[1]/div/div[2]/div[2]/div/div/form[2]/div[2]/div[9]/div[13]/input"));
+        mobilePhone.sendKeys(PHONE_NUMBER);
+
+        WebElement saveButton = browser.findElement(By.xpath("//button[@id='submitGuestAccount']"));
+        saveButton.click();
     }
 
     private boolean verifyElementAbsent(String locator) throws Exception {
