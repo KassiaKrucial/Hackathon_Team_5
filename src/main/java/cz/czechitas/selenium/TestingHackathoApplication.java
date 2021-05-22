@@ -184,6 +184,22 @@ public class TestingHackathoApplication {
         Assertions.assertEquals("ORDER CONFIRMATION", h1.getText());
     }
 
+    @Test
+    public void signInAndCreateBooking() {
+        browser.navigate().to(URL_OF_APPLICATION);
+
+        logInUser(EMAIL, PASSWORD);
+
+        WebElement homeButton = browser.findElement(By.xpath("//a[@title='Home']"));
+        homeButton.click();
+
+        createBooking();
+
+        WebElement header = browser.findElement(By.xpath("/html/body/div[1]/div[1]/header/div[3]/div/div/div[5]/div[1]/div[1]/h2"));
+
+        Assertions.assertEquals("Room successfully added to your cart", header.getText());
+    }
+
     @AfterEach
     public void tearDown() {
         browser.close();
