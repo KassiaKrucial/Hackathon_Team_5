@@ -200,6 +200,40 @@ public class TestingHackathoApplication {
         Assertions.assertEquals("Room successfully added to your cart", header.getText());
     }
 
+    @Test
+    public void signInAndCreateBookingAndPaybyCheque() {
+        browser.navigate().to(URL_OF_APPLICATION);
+
+        logInUser(EMAIL, PASSWORD);
+
+        WebElement homeButton = browser.findElement(By.xpath("//a[@title='Home']"));
+        homeButton.click();
+
+        createBooking();
+
+        WebElement proceed = browser.findElement(By.xpath("//a[@title='Proceed to checkout']"));
+        proceed.click();
+
+        WebElement proceedButton2 = browser.findElement(By.xpath("/html/body/div/div[2]/div/div[2]/div/section/div/section/div/div[1]/div/div[1]/div[2]/div/div[2]/div[2]/div/a"));
+        proceedButton2.click();
+
+        WebElement proceedToPayment = browser.findElement(By.xpath("//a[@title='Proceed to Payment']"));
+        proceedToPayment.click();
+
+        WebElement agreeToConditions = browser.findElement(By.xpath("//label[@id='tc_txt']"));
+        agreeToConditions.click();
+
+        WebElement cheque = browser.findElement(By.xpath("//a[@class='cheque']"));
+        cheque.click();
+
+        WebElement submitButton = browser.findElement(By.xpath("//button[@type='submit']"));
+        submitButton.click();
+
+        WebElement h1 = browser.findElement(By.xpath("//h1"));
+
+        Assertions.assertEquals("ORDER CONFIRMATION", h1.getText());
+    }
+
     @AfterEach
     public void tearDown() {
         browser.close();
