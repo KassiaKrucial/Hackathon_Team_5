@@ -1,5 +1,6 @@
 package cz.czechitas.selenium;
 
+import okhttp3.Address;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -7,6 +8,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import java.beans.Transient;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.openqa.selenium.support.ui.Select;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 
 public class TestingHackathoApplication {
 
@@ -77,7 +81,7 @@ public class TestingHackathoApplication {
     }
 
     @Test
-    public void createBookingFromHomePage() {
+    public void createBookingFromHomePageWithoutSingingIn() {
         browser.navigate().to(URL_OF_APPLICATION);
 
         createBooking();
@@ -137,9 +141,50 @@ public class TestingHackathoApplication {
         Assertions.assertEquals(PHONE_NUMBER, phoneForAssert.getText());
     }
 
+    @Test
+    public void createNewAddressForSignedInUser() {
+        browser.navigate().to(URL_OF_APPLICATION);
+
+        logInUser(EMAIL, PASSWORD);
+
+        WebElement myAddresses = browser.findElement(By.xpath("//a[@title='Addresses']"));
+        myAddresses.click();
+
+        WebElement newAddress = browser.findElement(By.xpath("//a[@title='Add an address']"));
+        newAddress.click();
+
+        long timeStamp = System.currentTimeMillis();
+        WebElement address = browser.findElement(By.xpath("//input[@id='address1']"));
+        address.sendKeys("aaa" + timeStamp);
+
+        WebElement city = browser.findElement(By.xpath("//input[@id='city']"));
+        city.sendKeys("London");
+
+        WebElement postCode = browser.findElement(By.xpath("//input[@id='postcode']"));
+        postCode.sendKeys("12345");
+
+        WebElement phone = browser.findElement(By.xpath("//input[@id='phone']"));
+        phone.sendKeys("123456789");
+
+        WebElement phone2 = browser.findElement(By.xpath("//input[@id='phone_mobile']"));
+        phone2.sendKeys("123456789");
+
+        WebElement alias = browser.findElement(By.xpath("//input[@id='alias']"));
+        alias.clear();
+        alias.sendKeys("London " + timeStamp);
+
+        WebElement submitButton = browser.findElement(By.xpath("//button[@id='submitAddress']"));
+        submitButton.click();
+
+        List<WebElement> headers = browser.findElements(By.xpath("//h3"));
+        WebElement header = headers.get(Math.max(0, (headers.size() - 1)));
+
+        Assertions.assertEquals("LONDON " + timeStamp, header.getText());
+    }
+
     @AfterEach
     public void tearDown() {
-        //browser.close();
+        browser.close();
     }
 
     private void logInUser(String email, String password){
