@@ -186,7 +186,7 @@ public class TestingHackathoApplication {
 
     @AfterEach
     public void tearDown() {
-        //browser.close();
+        browser.close();
     }
 
     private void logInUser(String email, String password){
